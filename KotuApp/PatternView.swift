@@ -22,6 +22,15 @@ struct PatternView: View {
                             Rectangle()
                                 .fill(.red)
                                 .frame(height: 1)
+                                .padding(.vertical, -0.5)
+
+                        }
+                    Text(" | ◯")
+                    Text("◯◯◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
                                 .padding(.vertical, -3)
                             Rectangle()
                                 .fill(.red)
@@ -29,30 +38,84 @@ struct PatternView: View {
                                 .frame(maxWidth: .infinity, alignment: .trailing)
 
                         }
-                    Text("｜◯◯◯◯")
                 }
                     .fontWeight(.none)
             }
 
             Text("Atamadaka")
             Toggle(isOn: $checkedAtamadaka) {
-                Text("◯◯◯◯")
-                    .fontWeight(.none)
+                HStack (spacing: 0) {
+                    Text("◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
+                                .padding(.vertical, -3)
+                            Rectangle()
+                                .fill(.red)
+                                .frame(width: 1, height: 5)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    Text("◯◯◯")
+                }
+                .fontWeight(.none)
             }
 
             Text("Nakadaka")
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Toggle(isOn: $checkedNakaDaka1) {
-                Text("◯◯〜◯◯")
-                    .fontWeight(.none)
+                HStack(spacing: 0) {
+                    Text("◯")
+                    Text("◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
+                                .padding(.vertical, -3)
+                            Rectangle()
+                                .fill(.red)
+                                .frame(width: 1, height: 5)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    Text("〜◯◯")
+                }
+                .fontWeight(.none)
             }
             Toggle(isOn: $checkedNakaDaka2) {
-                Text("◯◯〜◯〜◯◯")
-                    .fontWeight(.none)
+                HStack(spacing: 0) {
+                    Text("◯")
+                    Text("◯〜◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
+                                .padding(.vertical, -3)
+                            Rectangle()
+                                .fill(.red)
+                                .frame(width: 1, height: 5)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    Text("〜◯◯")
+                }
+                .fontWeight(.none)
             }
             Toggle(isOn: $checkedNakaDaka3) {
-                Text("◯◯〜◯◯")
+                HStack(spacing: 0) {
+                    Text("◯")
+                    Text("◯〜◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
+                                .padding(.vertical, -3)
+                            Rectangle()
+                                .fill(.red)
+                                .frame(width: 1, height: 5)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    Text("◯")
+                }
                     .fontWeight(.none)
             }
 
