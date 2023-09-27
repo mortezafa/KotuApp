@@ -34,17 +34,15 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Spacer()
-            HStack {
-                Button {
-                    howtoPopup.toggle()
-                } label: {
-                    Image(systemName: "questionmark.circle.fill")
-                }
-                .font(.largeTitle)
-                .fullScreenCover(isPresented: $howtoPopup, content: HowtoView.init)
+            Button {
+                howtoPopup.toggle()
+            } label: {
+                Image(systemName: "questionmark.circle.fill")
             }
-            .offset(x: 150, y: -170)
+            .font(.largeTitle)
+            .fullScreenCover(isPresented: $howtoPopup, content: HowtoView.init)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.bottom)
             HStack {
                 Button {
                     historyPopup.toggle()
@@ -71,12 +69,10 @@ struct ContentView: View {
                 .buttonStyle(.bordered)
                 .sheet(isPresented: $pattternPopup) {
                     PatternView()
-                        .presentationDetents([.large])
+                        .presentationDetents([.height(350)])
                 }
             }
-            .offset(x:0, y:-150)
-
-            .frame(alignment: .topLeading)
+            Spacer()
             Text("こうりゃく")
                 .font(.title)
             Button {
@@ -90,10 +86,8 @@ struct ContentView: View {
             .background(Color(white: 0.75))
             .clipShape(Capsule())
 
-            Rectangle()
-                .frame(height: 3)
-                .foregroundStyle(Color(white: 0.75))
-                .padding(10)
+            Divider()
+                .padding(.vertical)
 
             HStack() {
                 Button {
@@ -117,10 +111,8 @@ struct ContentView: View {
                 
             }
 
-            Rectangle()
-                .frame(height: 3)
-                .foregroundStyle(Color(white: 0.75))
-                .padding(10)
+            Divider()
+                .padding(.vertical)
 
             Button {
 
@@ -133,17 +125,54 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
 
             VStack(alignment: .leading) {
-                Text("**All:** 0 of 0 (0%)\n")
-                    .frame(maxWidth: .infinity)
-                Text("**Heiban / Odaka:** 0 of 0 (0%)\n")
-                Text("**Atamadaka:** 0 of 0 (0%)\n")
-                Text("**Nakadaka:** 0 of 0 (0%)\n")
+                Divider()
+                    .padding(.vertical)
+                HStack {
+                    Text("All")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 3)
+                        .background(.gray.opacity(0.7))
+                        .clipShape(Capsule())
+                    Spacer()
+                    Text("0 of 0 (0%)")
+                }
+                HStack {
+                    Text("Heiban")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 3)
+                        .background(.blue.opacity(0.7))
+                        .clipShape(Capsule())
+                    Text("Odaka")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 3)
+                        .background(.green.opacity(0.7))
+                        .clipShape(Capsule())
+                    Spacer()
+                    Text("0 of 0 (0%)")
+                }
+                HStack {
+                    Text("Atamadaka")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 3)
+                        .background(.red.opacity(0.7))
+                        .clipShape(Capsule())
+                    Spacer()
+                    Text("0 of 0 (0%)")
+                }
+                HStack {
+                    Text("Nakadaka")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 3)
+                        .background(.orange.opacity(0.7))
+                        .clipShape(Capsule())
+                    Spacer()
+                    Text("0 of 0 (0%)")
+                }
             }
-            .font(.title)
-            .offset(y: 25)
+            .font(.title2)
             .frame(maxWidth: .infinity)
         }
-        .padding()
+        .padding(.horizontal)
     }
 }
 

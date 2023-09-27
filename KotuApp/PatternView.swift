@@ -11,46 +11,55 @@ struct PatternView: View {
 
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+
+            Text("Heiban / Odaka")
             Toggle(isOn: $checkedHeibanOdaka) {
-                    Text("Heiban/Odaka: ")
-                    Text("◯◯◯◯｜◯◯◯◯")
-                    .padding(.all, 0.5)
+                HStack(spacing: 0) {
+                    Text("◯")
+                    Text("◯◯◯")
+                        .overlay(alignment: .top) {
+                            Rectangle()
+                                .fill(.red)
+                                .frame(height: 1)
+                                .padding(.vertical, -3)
+                            Rectangle()
+                                .fill(.red)
+                                .frame(width: 1, height: 5)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+
+                        }
+                    Text("｜◯◯◯◯")
                 }
-                .padding()
-
-                Toggle(isOn: $checkedAtamadaka) {
-                    Text("Atamadaka: ")
-                    Text("◯◯◯◯")
-                        .padding(.all, 0.5)
+                    .fontWeight(.none)
             }
-                .padding()
 
-            Text("Nakadaka: \n")
+            Text("Atamadaka")
+            Toggle(isOn: $checkedAtamadaka) {
+                Text("◯◯◯◯")
+                    .fontWeight(.none)
+            }
+
+            Text("Nakadaka")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
 
             Toggle(isOn: $checkedNakaDaka1) {
                 Text("◯◯〜◯◯")
-                    .padding()
                     .fontWeight(.none)
             }
-            .padding()
             Toggle(isOn: $checkedNakaDaka2) {
                 Text("◯◯〜◯〜◯◯")
                     .fontWeight(.none)
             }
-            .padding()
             Toggle(isOn: $checkedNakaDaka3) {
                 Text("◯◯〜◯◯")
-                    .padding()
                     .fontWeight(.none)
             }
-            .padding()
 
         }
         .font(.title2)
         .fontWeight(.bold)
+        .padding(.horizontal)
     }
 }
 

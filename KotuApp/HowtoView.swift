@@ -34,9 +34,9 @@ struct HowtoView :View {
         HStack {
             Text("This text was taken from")
                 .italic()
-            (Link("kotu.io", destination: URL(string: "https://kotu.io/")!))
+            Link("kotu.io", destination: URL(string: "https://kotu.io/")!)
                 .italic()
-        }
+            }
         }
     }
 }
