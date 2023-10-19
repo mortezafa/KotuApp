@@ -1,13 +1,14 @@
 // ContentView.swift
 
 import SwiftUI
-
+import AVFoundation
 
 
 struct ContentView: View {
     @State var historyPopup = false
     @State var howtoPopup = false
     @State var pattternPopup = false
+    @StateObject private var viewModel = PlayerViewModel()
 
     struct HistoryView: View {
         var body: some View {
@@ -53,7 +54,7 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity)
 
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
                 .sheet(isPresented: $historyPopup) {
                     HistoryView()
                     .presentationDetents([.medium, .large])
@@ -66,7 +67,7 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
                 .sheet(isPresented: $pattternPopup) {
                     PatternView()
                         .presentationDetents([.height(350)])
@@ -76,7 +77,9 @@ struct ContentView: View {
             Text("こうりゃく")
                 .font(.title)
             Button {
-
+                Task {
+                    await viewModel.playMinimalPair()
+                }
             } label: {
                 Image(systemName: "speaker.wave.2.fill")
                     .font(.title2)
@@ -94,7 +97,7 @@ struct ContentView: View {
 
                 } label: {
                     Text("コーリャク")
-                        .font(.title)
+                        .font(.title2)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                 }
@@ -103,7 +106,7 @@ struct ContentView: View {
 
                 } label: {
                     Text("コ＼ーリャク")
-                        .font(.title)
+                        .font(.title2)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                 }
