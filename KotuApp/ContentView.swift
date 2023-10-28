@@ -8,7 +8,11 @@ struct ContentView: View {
     @State var historyPopup = false
     @State var howtoPopup = false
     @State var pattternPopup = false
-    @StateObject private var viewModel = PlayerViewModel()
+    var viewModel = PlayerViewModel()
+    @State var apiCalled = false
+    @State var continueButtonTapped = false
+    @State var titleWord: String = " "
+
 
     struct HistoryView: View {
         var body: some View {
@@ -70,15 +74,16 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent)
                 .sheet(isPresented: $pattternPopup) {
                     PatternView()
-                        .presentationDetents([.height(350)])
+                        .presentationDetents([.height(400)])
                 }
             }
             Spacer()
-            Text("こうりゃく")
-                .font(.title)
+            Text(titleWord)
+                .padding(.bottom, 30)
+                .font(.largeTitle)
             Button {
                 Task {
-                    await viewModel.playMinimalPair()
+                    viewModel.repeatsound()
                 }
             } label: {
                 Image(systemName: "speaker.wave.2.fill")
@@ -118,6 +123,10 @@ struct ContentView: View {
                 .padding(.vertical)
 
             Button {
+                Task {
+                    await viewModel.playMinimalPair()
+                    titleWord = viewModel.fetchCorrectWord()
+                }
 
             } label: {
                 Text("Continue")
@@ -176,6 +185,12 @@ struct ContentView: View {
             .frame(maxWidth: .infinity)
         }
         .padding(.horizontal)
+        .onAppear(perform: {
+            Task{
+                await viewModel.playMinimalPair()
+                titleWord = viewModel.fetchCorrectWord()
+            }
+        })
     }
 }
 

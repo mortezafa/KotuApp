@@ -2,7 +2,7 @@
 
 import Foundation
 import AVFoundation
-
+import Observation
 
 struct MinimalPairs: Decodable {
     struct Pair: Decodable {
@@ -27,8 +27,7 @@ struct MinimalPairs: Decodable {
     let pairs: [Pair]
 }
 
-class KotuService: ObservableObject {
-//    var bombSoundEffect: AVAudioPlayer?
+@Observable class KotuService {
     enum Error: Swift.Error {
         case invalidURL
         case invalidResponse
@@ -72,14 +71,14 @@ class KotuService: ObservableObject {
     }
 }
 
-@MainActor
-class PlayerViewModel: ObservableObject {
+@Observable class PlayerViewModel {
     private let service = KotuService()
     private var player: AVAudioPlayer?
 
-    @Published var minimalPairs: MinimalPairs?
-    @Published var currentPair: MinimalPairs.Pair?
-    @Published var errorMessage: String?
+    var minimalPairs: MinimalPairs?
+    var currentPair: MinimalPairs.Pair?
+    var errorMessage: String?
+    var wordTitle: String?
 
     func playMinimalPair() async {
         do {
@@ -91,28 +90,46 @@ class PlayerViewModel: ObservableObject {
                 errorMessage = "No pair available."
                 return
             }
+            print(correctPair)
 
             currentPair = correctPair
 
-            let data = correctPair.entries[0].pronunciations[0].soundData
-            playSound(data: data)
         } catch {
             errorMessage = "Error occurred: \(error.localizedDescription)"
         }
     }
+    
+        func repeatsound() {
+        guard let currentPair = currentPair else {
+                    errorMessage = "No current pair to replay."
+                    return
+                }
 
-    private func playSound(data: Data) {
+                let data = currentPair.entries[0].pronunciations[0].soundData
+                playSound(data: data)
+    }
+
+    func fetchCorrectWord() -> String {
+        guard let word = minimalPairs?.kana else {
+            errorMessage = "No word"
+            return errorMessage!
+        }
+        return word
+    }
+
+
+     private func playSound(data: Data) {
         do {
             let player = try AVAudioPlayer(data: data)
             player.prepareToPlay()
             player.play()
             self.player = player
-        } catch {
+           } catch {
             errorMessage = "Error initializing AVAudioPlayer: \(error.localizedDescription)"
         }
+
     }
 }
-
 
 
 struct Config: Decodable {

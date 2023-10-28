@@ -12,7 +12,9 @@ struct PatternView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-
+            Text("Patterns")
+                .font(.largeTitle)
+                .padding(.vertical)
             Text("Heiban / Odaka")
             Toggle(isOn: $checkedHeibanOdaka) {
                 HStack(spacing: 0) {
@@ -118,7 +120,6 @@ struct PatternView: View {
                 }
                     .fontWeight(.none)
             }
-
         }
         .font(.title2)
         .fontWeight(.bold)
