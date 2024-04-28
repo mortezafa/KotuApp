@@ -5,13 +5,16 @@ import AVFoundation
 
 
 struct ContentView: View {
-    @State var historyPopup = false
-    @State var howtoPopup = false
-    @State var pattternPopup = false
+    @State private var historyPopup = false
+    @State private var howtoPopup = false
+    @State private var pattternPopup = false
     var viewModel = PlayerViewModel()
-    @State var apiCalled = false
-    @State var continueButtonTapped = false
-    @State var titleWord: String = " "
+    @State private var apiCalled = false
+    @State private var continueButtonTapped = false
+    @State private var titleWord: String = " "
+    @State private var leftButtonText: String = " "
+    @State private var rightButtonText: String = " "
+
 
 
     struct HistoryView: View {
@@ -101,7 +104,7 @@ struct ContentView: View {
                 Button {
 
                 } label: {
-                    Text("コーリャク")
+                    Text(leftButtonText)
                         .font(.title2)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -110,7 +113,7 @@ struct ContentView: View {
                 Button {
 
                 } label: {
-                    Text("コ＼ーリャク")
+                    Text(rightButtonText)
                         .font(.title2)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -126,8 +129,9 @@ struct ContentView: View {
                 Task {
                     await viewModel.playMinimalPair()
                     titleWord = viewModel.fetchCorrectWord()
-                }
 
+                    displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
+                }
             } label: {
                 Text("Continue")
                     .font(.title2)
@@ -189,14 +193,26 @@ struct ContentView: View {
             Task{
                 await viewModel.playMinimalPair()
                 titleWord = viewModel.fetchCorrectWord()
+                displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
             }
         })
     }
+    func displayCorrectKanaUI(correctKana: String) {
+        let correctKana = viewModel.pitchRepersentation()
+        let incorrectKana = viewModel.pitchMisrepresentation()
+        let randomNumber = Int.random(in: 1...2)
+        if randomNumber == 1 {
+            leftButtonText = correctKana
+            rightButtonText = incorrectKana
+        } else {
+            rightButtonText = correctKana
+            leftButtonText = incorrectKana
+        }
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+}
+
+#Preview {
+    ContentView()
 }

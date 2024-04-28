@@ -16,6 +16,7 @@ struct HowtoView :View {
                     .foregroundStyle(.black)
                 }
             }
+        Spacer()
         Text("Minimal Pairs")
             .font(.largeTitle)
             .fontWeight(.bold)
@@ -23,14 +24,15 @@ struct HowtoView :View {
             .padding()
         Text("\u{2022} This test uses the symbol \u{FF3C}  after the accented mora in a word to indicate a pitch drop. For example, たか\u{FF3C}い is pronounced low-high-low, and まちが\u{FF3C}い is pronounced low-high-high-low. If the word is flat (heiban), there is no \u{FF3C}, such as in: くるま low-high-high. Rises in pitch are not notated in any words.")
             .padding(.all, 20)
-            .font(.title3)
+            .font(.callout)
         Text("\u{2022} All audio, and all potential answers on this test are real words. But the purpose of the test is not to think of words (because that would be testing recall), but rather to test your pitch accent perception by simply choosing the correct notation based on how the recording sounds.")
-            .padding(.all, 20)
-            .font(.title3)
+            .padding(.all, 15)
+            .font(.callout)
 
         Text("\u{2022} There is a slight falling contour at the end of heiban words in this test because the words are said in isolation. It is important to be able to distinguish that slight falling contour from an actual accent, and that will be something you become able to do as you get used to the test.")
-            .padding(.all, 20)
-            .font(.title3)
+            .padding(.all, 15)
+            .font(.callout)
+        Spacer()
         HStack {
             Text("This text was taken from")
                 .italic()
