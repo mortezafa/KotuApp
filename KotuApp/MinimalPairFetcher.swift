@@ -127,6 +127,10 @@ struct MinimalPairs: Decodable {
         return correctKana
     }
 
+    func getCorrectID() -> UUID {
+        guard let correctId = currentPair?.id else { return UUID() }
+        return correctId
+    }
 
     func pitchRepersentation() -> String {
         var moras = Array(fetchCorrectKana()).map(String.init)
