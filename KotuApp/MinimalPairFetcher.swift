@@ -67,10 +67,20 @@ struct MinimalPairs: Decodable {
     }
 }
 
+
+
 @Observable class PlayerViewModel {
+//    static let shared = PlayerViewModel()
+
+    struct Answers: Identifiable {
+        let id = UUID()
+        let word: String
+        let isCorrect: Bool
+    }
+
     private let service = KotuService()
     private var player: AVAudioPlayer?
-
+    var answerHistory: [Answers] = []
     var minimalPairs: MinimalPairs?
     var currentPair: MinimalPairs.Pair?
     var errorMessage: String?
@@ -100,15 +110,15 @@ struct MinimalPairs: Decodable {
             errorMessage = "Error occurred: \(error.localizedDescription)"
         }
     }
-    
-        func repeatsound() {
-        guard let currentPair = currentPair else {
-                    errorMessage = "No current pair to replay."
-                    return
-                }
 
-                let data = currentPair.entries[0].pronunciations[0].soundFile
-//                playSound(data: data)
+    func repeatsound() {
+        guard let currentPair = currentPair else {
+            errorMessage = "No current pair to replay."
+            return
+        }
+
+        let data = currentPair.entries[0].pronunciations[0].soundFile
+        //                playSound(data: data)
     }
 
     func fetchCorrectWord() -> String {
@@ -119,7 +129,7 @@ struct MinimalPairs: Decodable {
         return word
     }
 
-    
+
     private func fetchCorrectKana() -> String {
         guard let correctKana = currentPair?.entries[0].pronunciations[0].phrases[0].rawPronunciation else {
             return "no correct Kana"
@@ -132,8 +142,33 @@ struct MinimalPairs: Decodable {
         return correctId
     }
 
+    private func splitIntoMoras(text: String) -> [String] {
+        let smallKana: Set<Character> = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ", "ッ"]
+        var moras: [String] = []
+        let characters = Array(text)
+
+        var index = 0
+        while index < characters.count {
+            let char = characters[index]
+
+            //if its the last character or the next character is not a small kana, its a single mora.
+            if index == characters.count - 1 || !smallKana.contains(characters[index + 1]) {
+                moras.append(String(char))
+                index += 1
+            } else {
+                //the next character is a small kana so we can jusy combine them into a single mora.
+                let nextChar = characters[index + 1]
+                moras.append(String(char) + String(nextChar))
+                index += 2
+            }
+        }
+
+        return moras
+    }
+
     func pitchRepersentation() -> String {
-        var moras = Array(fetchCorrectKana()).map(String.init)
+        var moras = splitIntoMoras(text: fetchCorrectKana())
+        print(" Here are the moras: \(moras)")
         var pitchRepersentedWord = ""
         guard let pitchAccent = currentPair?.pitchAccent else {
             return "No pair"
@@ -153,7 +188,7 @@ struct MinimalPairs: Decodable {
     }
 
     func pitchMisrepresentation() -> String {
-        let moras = Array(fetchCorrectKana()).map(String.init)
+        let moras = splitIntoMoras(text: fetchCorrectKana())
         guard let pitchAccent = currentPair?.pitchAccent else {
             return "No pair or insufficient moras"
         }
@@ -172,11 +207,6 @@ struct MinimalPairs: Decodable {
             }
         }
 
-//        guard let randomIndex = validIndices.randomElement() else {
-//            print(validIndices.count)
-//                return "No valid position for pitch drop"
-//            }
-
         print(validIndices)
 
 
@@ -193,20 +223,25 @@ struct MinimalPairs: Decodable {
         return pitchMisrepresentedWord
     }
 
+    //     private func playSound(data: String) {
+    //        do {
+    //            let player = try AVAudioPlayer(data: data)
+    //            player.prepareToPlay()
+    //            player.play()
+    //            self.player = player
+    //           } catch {
+    //            errorMessage = "Error initializing AVAudioPlayer: \(error.localizedDescription)"
+    //        }
+    //
+    //    }
 
-
-//     private func playSound(data: String) {
-//        do {
-//            let player = try AVAudioPlayer(data: data)
-//            player.prepareToPlay()
-//            player.play()
-//            self.player = player
-//           } catch {
-//            errorMessage = "Error initializing AVAudioPlayer: \(error.localizedDescription)"
-//        }
-//
-//    }
+    func addToHistory(word: String, isCorrect: Bool) {
+        let answer = Answers(word: word, isCorrect: isCorrect)
+        answerHistory.append(answer)
+        print(answerHistory)
+    }
 }
+
 
 
 struct Config: Decodable {

@@ -5,21 +5,20 @@ import AVFoundation
 
 
 struct ContentView: View {
-
     var viewModel = PlayerViewModel()
-    @State private var titleWord: String = " "
-    @State private var leftButtonText: String = " "
+    @State private var titleWord: String = ""
+    @State private var leftButtonText: String = ""
     @State private var leftId: UUID = UUID()
     @State private var rightId: UUID = UUID()
-    @State private var rightButtonText: String = " "
-    @State private var selectedButton: Int? = nil
+    @State private var rightButtonText: String = ""
+    @State private var hasSelected: Bool = false
     @State private var isLeftButtonCorrect: Bool? = nil
     @State private var isRightButtonCorrect: Bool? = nil
 
 
     var body: some View {
         VStack {
-            HistortyPatternView()
+            HistortyPatternView(viewModel: viewModel)
             Spacer()
             Text(titleWord)
                 .padding(.bottom, 30)
@@ -45,6 +44,12 @@ struct ContentView: View {
                     let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
                     isLeftButtonCorrect = isCorrect
                     isRightButtonCorrect = !isCorrect
+                    hasSelected = true
+                    if isCorrect {
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: true)
+                    } else {
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: false)
+                    }
                 } label: {
                     Text(leftButtonText)
                         .font(.title2)
@@ -58,6 +63,12 @@ struct ContentView: View {
                     let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
                     isRightButtonCorrect = isCorrect
                     isLeftButtonCorrect = !isCorrect
+                    hasSelected = true
+                    if isCorrect {
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: true)
+                    } else {
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: false)
+                    }
                 } label: {
                     Text(rightButtonText)
                         .font(.title2)
@@ -73,13 +84,18 @@ struct ContentView: View {
 
             Button {
                 Task {
-                    await viewModel.playMinimalPair()
-                    titleWord = viewModel.fetchCorrectWord()
+                    if hasSelected {
+                        await viewModel.playMinimalPair()
+                        titleWord = viewModel.fetchCorrectWord()
 
-                    displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
+                        displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
 
-                   isLeftButtonCorrect = nil
-                   isRightButtonCorrect = nil
+                        isLeftButtonCorrect = nil
+                        isRightButtonCorrect = nil
+                        hasSelected = false
+                    } else {
+
+                    }
                 }
             } label: {
                 Text("Continue")
@@ -113,13 +129,11 @@ struct ContentView: View {
             leftButtonText = correctKana
             leftId = correctId
             rightId = UUID()
-//            correctButton = 1
             rightButtonText = incorrectKana
         } else {
             rightButtonText = correctKana
             rightId = correctId
             leftId = UUID()
-//            correctButton = 2
             leftButtonText = incorrectKana
         }
     }
@@ -131,28 +145,25 @@ struct ContentView: View {
 }
 
 struct HistoryView: View {
+    @State var viewModel = PlayerViewModel() // I think this instantiation causes issues
     var body: some View {
         VStack {
             List {
-                Group {
-                    Text("ジョウキョウク")
-                    Text("ジョウキョウク")
-                    Text("ガッコウ")
-                    Text("ガッコウ")
-                    Text("ジョウキョウク")
-                    Text("ガッコウ")
-                    Text("ジョウキョウク")
-                    Text("ジョウキョウク")
-                    Text("ジョウキョウク")
-                    Text("ジョウキョウク")
+                ForEach(viewModel.answerHistory) { historyEntry in
+                    HStack {
+                        Text(historyEntry.word)
+                            .foregroundStyle(.white)
+                    }
                 }
+                .listRowBackground(Color.cyan)
             }
-            .frame(width: .infinity, height: .infinity)
+            .frame(width: .infinity)
         }
     }
 }
 
 struct HistortyPatternView: View {
+    @State var viewModel: PlayerViewModel
     @State private var historyPopup = false
     @State private var howtoPopup = false
     @State private var pattternPopup = false
@@ -178,7 +189,18 @@ struct HistortyPatternView: View {
             }
             .buttonStyle(.borderedProminent)
             .sheet(isPresented: $historyPopup) {
-                HistoryView()
+                VStack {
+                    List {
+                        ForEach(viewModel.answerHistory) { historyEntry in
+                            HStack {
+                                Text(historyEntry.word)
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                        .listRowBackground(Color.cyan)
+                    }
+                    .frame(width: .infinity)
+                }
                 .presentationDetents([.medium, .large])
             }
             Button {
