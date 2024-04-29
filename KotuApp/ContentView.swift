@@ -23,9 +23,10 @@ struct ContentView: View {
             Text(titleWord)
                 .padding(.bottom, 30)
                 .font(.largeTitle)
+//                .onChange(of: ?????, <#T##action: (Equatable, Equatable) -> Void##(Equatable, Equatable) -> Void##(_ oldValue: Equatable, _ newValue: Equatable) -> Void#>)
             Button {
                 Task {
-                    viewModel.repeatsound()
+                    await viewModel.repeatsound()
                 }
             } label: {
                 Image(systemName: "speaker.wave.2.fill")
@@ -96,6 +97,8 @@ struct ContentView: View {
                     } else {
 
                     }
+                    await viewModel.repeatsound()
+
                 }
             } label: {
                 Text("Continue")
@@ -116,6 +119,7 @@ struct ContentView: View {
             Task{
                 await viewModel.playMinimalPair()
                 titleWord = viewModel.fetchCorrectWord()
+                await viewModel.repeatsound()
                 displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
             }
         })
@@ -144,23 +148,6 @@ struct ContentView: View {
     }
 }
 
-struct HistoryView: View {
-    @State var viewModel = PlayerViewModel() // I think this instantiation causes issues
-    var body: some View {
-        VStack {
-            List {
-                ForEach(viewModel.answerHistory) { historyEntry in
-                    HStack {
-                        Text(historyEntry.word)
-                            .foregroundStyle(.white)
-                    }
-                }
-                .listRowBackground(Color.cyan)
-            }
-            .frame(width: .infinity)
-        }
-    }
-}
 
 struct HistortyPatternView: View {
     @State var viewModel: PlayerViewModel
@@ -191,13 +178,13 @@ struct HistortyPatternView: View {
             .sheet(isPresented: $historyPopup) {
                 VStack {
                     List {
-                        ForEach(viewModel.answerHistory) { historyEntry in
+                        ForEach(viewModel.answerHistory.reversed()) { historyEntry in
                             HStack {
                                 Text(historyEntry.word)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(historyEntry.isCorrect ? Color("correct") : Color("inCorrect"))
                             }
+                            .listRowBackground(historyEntry.isCorrect ? Color("correctHis") : Color("inCorrectHis"))
                         }
-                        .listRowBackground(Color.cyan)
                     }
                     .frame(width: .infinity)
                 }

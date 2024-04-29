@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HowtoView :View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
     VStack {
@@ -13,7 +14,7 @@ struct HowtoView :View {
                     .font(.title)
                     .frame(maxWidth: .infinity, maxHeight: 30, alignment: .trailing)
                     .padding(.trailing, 40)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                 }
             }
         Spacer()

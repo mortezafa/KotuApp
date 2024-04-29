@@ -26,13 +26,12 @@ struct MinimalPairs: Decodable {
     let kana: String
     let pairs: [Pair]
 }
+enum Error: Swift.Error {
+    case invalidURL
+    case invalidResponse
+}
 
 @Observable class KotuService {
-    enum Error: Swift.Error {
-        case invalidURL
-        case invalidResponse
-    }
-
 
     func randomMinimalPairs() async throws -> MinimalPairs {
         guard let url = URL(string: "https://kotu.io/api/tests/pitchAccent/minimalPairs/random?heibanEnabled=true&atamadakaEnabled=true&secondMoraAccentEnabled=true&secondToLastMoraAccentEnabled=true&otherNakadakaEnabled=true&onlyDevoicedWords=false") else {
@@ -111,14 +110,14 @@ struct MinimalPairs: Decodable {
         }
     }
 
-    func repeatsound() {
+    func repeatsound() async {
         guard let currentPair = currentPair else {
             errorMessage = "No current pair to replay."
             return
         }
 
-        let data = currentPair.entries[0].pronunciations[0].soundFile
-        //                playSound(data: data)
+        let data = currentPair.id
+        await playSound(data: data)
     }
 
     func fetchCorrectWord() -> String {
@@ -223,26 +222,38 @@ struct MinimalPairs: Decodable {
         return pitchMisrepresentedWord
     }
 
-    //     private func playSound(data: String) {
-    //        do {
-    //            let player = try AVAudioPlayer(data: data)
-    //            player.prepareToPlay()
-    //            player.play()
-    //            self.player = player
-    //           } catch {
-    //            errorMessage = "Error initializing AVAudioPlayer: \(error.localizedDescription)"
-    //        }
-    //
-    //    }
+    private func playSound(data: UUID) async {
+            do {
+                let player = try await AVAudioPlayer(data: fetchAudioData(moraId: data))
+                player.prepareToPlay()
+                player.play()
+                self.player = player
+               } catch {
+                errorMessage = "Error initializing AVAudioPlayer: \(error.localizedDescription)"
+            }
+    
+        }
 
     func addToHistory(word: String, isCorrect: Bool) {
         let answer = Answers(word: word, isCorrect: isCorrect)
         answerHistory.append(answer)
         print(answerHistory)
     }
+
+
+    private func fetchAudioData(moraId: UUID) async throws -> Data {
+        guard let url = URL(string: "https://kotu.io/api/pronunciation/audio/\(moraId)?lowPass=false&backgroundNoise=false") else {
+            throw URLError(.badURL)
+        }
+        let (data, response) = try await URLSession.shared.data(from: url)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+        return data
+    }
+
 }
-
-
 
 struct Config: Decodable {
     static let shared = {
