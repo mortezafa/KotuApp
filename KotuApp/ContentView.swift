@@ -23,7 +23,6 @@ struct ContentView: View {
             Text(titleWord)
                 .padding(.bottom, 30)
                 .font(.largeTitle)
-//                .onChange(of: ?????, <#T##action: (Equatable, Equatable) -> Void##(Equatable, Equatable) -> Void##(_ oldValue: Equatable, _ newValue: Equatable) -> Void#>)
             Button {
                 Task {
                     await viewModel.repeatsound()
@@ -47,9 +46,9 @@ struct ContentView: View {
                     isRightButtonCorrect = !isCorrect
                     hasSelected = true
                     if isCorrect {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: true)
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
                     } else {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: false)
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
                     }
                 } label: {
                     Text(leftButtonText)
@@ -66,9 +65,9 @@ struct ContentView: View {
                     isLeftButtonCorrect = !isCorrect
                     hasSelected = true
                     if isCorrect {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: true)
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
                     } else {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(), isCorrect: false)
+                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
                     }
                 } label: {
                     Text(rightButtonText)
@@ -89,7 +88,7 @@ struct ContentView: View {
                         await viewModel.playMinimalPair()
                         titleWord = viewModel.fetchCorrectWord()
 
-                        displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
+                        displayCorrectKanaUI(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
 
                         isLeftButtonCorrect = nil
                         isRightButtonCorrect = nil
@@ -120,13 +119,13 @@ struct ContentView: View {
                 await viewModel.playMinimalPair()
                 titleWord = viewModel.fetchCorrectWord()
                 await viewModel.repeatsound()
-                displayCorrectKanaUI(correctKana: viewModel.fetchCorrectWord())
+                displayCorrectKanaUI(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
             }
         })
     }
-    func displayCorrectKanaUI(correctKana: String) {
-        let correctKana = viewModel.pitchRepersentation()
-        let incorrectKana = viewModel.pitchMisrepresentation()
+    func displayCorrectKanaUI(correctKana: String, incorrectKana: String) {
+        let correctKana = viewModel.pitchRepersentation(minimalPair: correctKana)
+        let incorrectKana = viewModel.pitchMisrepersentation(minimalPair: incorrectKana)
         let correctId = viewModel.getCorrectID()
         let randomNumber = Int.random(in: 1...2)
         if randomNumber == 1 {

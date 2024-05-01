@@ -69,7 +69,6 @@ enum Error: Swift.Error {
 
 
 @Observable class PlayerViewModel {
-//    static let shared = PlayerViewModel()
 
     struct Answers: Identifiable {
         let id = UUID()
@@ -81,7 +80,8 @@ enum Error: Swift.Error {
     private var player: AVAudioPlayer?
     var answerHistory: [Answers] = []
     var minimalPairs: MinimalPairs?
-    var currentPair: MinimalPairs.Pair?
+    var correctpair: MinimalPairs.Pair?
+    var incorrectPair: MinimalPairs.Pair?
     var errorMessage: String?
     var wordTitle: String?
 
@@ -100,18 +100,19 @@ enum Error: Swift.Error {
             }
             print("THIS IS THE CORRECT PAIR \(correctPair) ")
 
-            currentPair = correctPair
-            let pitchAccentOfCorrectPair = currentPair?.pitchAccent
+            correctpair = correctPair
 
-            print("THIS IS THE PITCH OF THE CORRECT PAIR", pitchAccentOfCorrectPair!)
+            incorrectPair = fetchedPairs.pairs.filter { $0.pitchAccent != correctPair.pitchAccent }.randomElement()
+
 
         } catch {
             errorMessage = "Error occurred: \(error.localizedDescription)"
         }
     }
 
+
     func repeatsound() async {
-        guard let currentPair = currentPair else {
+        guard let currentPair = correctpair else {
             errorMessage = "No current pair to replay."
             return
         }
@@ -129,15 +130,22 @@ enum Error: Swift.Error {
     }
 
 
-    private func fetchCorrectKana() -> String {
-        guard let correctKana = currentPair?.entries[0].pronunciations[0].phrases[0].rawPronunciation else {
+     func fetchCorrectKana() -> String {
+        guard let correctKana = correctpair?.entries[0].pronunciations[0].phrases[0].rawPronunciation else {
             return "no correct Kana"
         }
         return correctKana
     }
 
+     func fetchIncorrectKana() -> String {
+        guard let incorrectKana = incorrectPair?.entries[0].pronunciations[0].phrases[0].rawPronunciation else {
+            return "no incorrect Kana"
+        }
+        return incorrectKana
+    }
+
     func getCorrectID() -> UUID {
-        guard let correctId = currentPair?.id else { return UUID() }
+        guard let correctId = correctpair?.id else { return UUID() }
         return correctId
     }
 
@@ -165,11 +173,12 @@ enum Error: Swift.Error {
         return moras
     }
 
-    func pitchRepersentation() -> String {
-        var moras = splitIntoMoras(text: fetchCorrectKana())
+    func pitchRepersentation(minimalPair: String) -> String {
+        var moras = splitIntoMoras(text: minimalPair)
         print(" Here are the moras: \(moras)")
         var pitchRepersentedWord = ""
-        guard let pitchAccent = currentPair?.pitchAccent else {
+
+        guard let pitchAccent = correctpair?.pitchAccent else {
             return "No pair"
         }
 
@@ -186,41 +195,29 @@ enum Error: Swift.Error {
         return pitchRepersentedWord
     }
 
-    func pitchMisrepresentation() -> String {
-        let moras = splitIntoMoras(text: fetchCorrectKana())
-        guard let pitchAccent = currentPair?.pitchAccent else {
-            return "No pair or insufficient moras"
+
+    func pitchMisrepersentation(minimalPair: String) -> String {
+        var moras = splitIntoMoras(text: minimalPair)
+        print(" Here are the moras: \(moras)")
+        var pitchRepersentedWord = ""
+
+        guard let pitchAccent = incorrectPair?.pitchAccent else {
+            return "No pair"
         }
 
-        var pitchMisrepresentedWord = ""
-        var randomIndex = Int.random(in: 0..<moras.count)
-
-        var validIndices = [Int]()
-
-
-        for index in 1..<moras.count {
-            if moras[index] != "ン" && index != pitchAccent {
-                if moras[index - 1] != "ン"  {
-                    validIndices.append(index)
-                }
-            }
+        if pitchAccent == 0 {
+            pitchRepersentedWord = moras.joined()
+        } else if pitchAccent == 1 {
+            moras.insert("＼", at: 1)
+            pitchRepersentedWord = moras.joined()
+        } else if pitchAccent > 1 {
+            moras.insert("＼", at: pitchAccent)
+            pitchRepersentedWord = moras.joined()
         }
 
-        print(validIndices)
-
-
-        var modifiedMoras = moras
-
-        if validIndices.count == 0 {
-            modifiedMoras.insert("＼", at: moras.count)
-        }
-
-        modifiedMoras.insert("＼", at: randomIndex)
-        pitchMisrepresentedWord = modifiedMoras.joined()
-
-        print(modifiedMoras)
-        return pitchMisrepresentedWord
+        return pitchRepersentedWord
     }
+
 
     private func playSound(data: UUID) async {
             do {
