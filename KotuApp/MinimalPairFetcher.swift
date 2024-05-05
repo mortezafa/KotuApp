@@ -74,6 +74,7 @@ enum Error: Swift.Error {
         let id = UUID()
         let word: String
         let isCorrect: Bool
+        let pitchType: PitchAccentType
     }
 
     private let service = KotuService()
@@ -232,7 +233,7 @@ enum Error: Swift.Error {
         }
 
     func addToHistory(word: String, isCorrect: Bool) {
-        let answer = Answers(word: word, isCorrect: isCorrect)
+        let answer = Answers(word: word, isCorrect: isCorrect, pitchType: getPitchType())
         answerHistory.append(answer)
         print(answerHistory)
     }
@@ -250,6 +251,26 @@ enum Error: Swift.Error {
         return data
     }
 
+
+
+
+
+
+    func getPitchType() -> PitchAccentType {
+        if correctpair?.pitchAccent == 0 {
+            return .heiban
+        } else if correctpair?.pitchAccent == 1 {
+            return .atamadaka
+        }
+
+        return .nakadaka
+    }
+
+}
+enum PitchAccentType {
+    case heiban // we treat heiban and odaka as the same so no need for another case
+    case atamadaka
+    case nakadaka
 }
 
 struct Config: Decodable {

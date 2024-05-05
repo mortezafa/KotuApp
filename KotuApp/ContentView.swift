@@ -108,7 +108,7 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
 
             VStack(alignment: .leading) {
-                PitchPatternsView()
+                PitchPatternsView(viewModel: viewModel)
             }
             .font(.title2)
             .frame(maxWidth: .infinity)
@@ -208,6 +208,20 @@ struct HistortyPatternView: View {
 }
 
 struct PitchPatternsView: View {
+    @State var viewModel: PlayerViewModel
+    private var numOfCorrect: Int { viewModel.answerHistory.filter { $0.isCorrect }.count
+    }
+    private var totalAttempts: Int { viewModel.answerHistory.count }
+
+    private var percentage: String {
+        guard totalAttempts > 0 else {
+            return "0%"
+        }
+        let calculatedPercentage = (numOfCorrect * 100) / totalAttempts
+        return "\(calculatedPercentage)%"
+    }
+
+
     var body: some View {
         Divider()
             .padding(.vertical)
@@ -218,7 +232,8 @@ struct PitchPatternsView: View {
                 .background(.gray.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
-            Text("0 of 0 (0%)")
+            Text("\(numOfCorrect) of \(totalAttempts) (\(percentage))")
+
         }
         HStack {
             Text("Heiban")
@@ -232,7 +247,7 @@ struct PitchPatternsView: View {
                 .background(.green.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
-            Text("0 of 0 (0%)")
+            Text("\(correctCount(pitchType:.heiban)) of \(totalCount(pitchType:.heiban)) (\(percentage(pitchType:.heiban)))")
         }
         HStack {
             Text("Atamadaka")
@@ -241,7 +256,7 @@ struct PitchPatternsView: View {
                 .background(.red.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
-            Text("0 of 0 (0%)")
+            Text("\(correctCount(pitchType:.atamadaka)) of \(totalCount(pitchType:.atamadaka)) (\(percentage(pitchType:.atamadaka)))")
         }
         HStack {
             Text("Nakadaka")
@@ -250,9 +265,31 @@ struct PitchPatternsView: View {
                 .background(.orange.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
-            Text("0 of 0 (0%)")
+            Text("\(correctCount(pitchType:.nakadaka)) of \(totalCount(pitchType:.nakadaka)) (\(percentage(pitchType:.nakadaka)))")
         }
+
+
     }
+    func correctCount(pitchType: PitchAccentType) -> Int {
+        viewModel.answerHistory.filter { $0.isCorrect && $0.pitchType == pitchType }.count
+    }
+
+    func totalCount(pitchType: PitchAccentType) -> Int {
+        viewModel.answerHistory.filter { $0.pitchType == pitchType }.count
+    }
+
+    func percentage(pitchType: PitchAccentType) -> String {
+        let totalAttempts = totalCount(pitchType: pitchType)
+
+        guard totalAttempts > 0 else {
+            return "0%"
+        }
+
+        let calculatedPercentage = (correctCount(pitchType: pitchType) * 100) / totalAttempts
+
+        return "\(calculatedPercentage)%"
+    }
+
 }
 
 #Preview {
