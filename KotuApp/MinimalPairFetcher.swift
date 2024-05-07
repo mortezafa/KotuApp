@@ -66,8 +66,6 @@ enum Error: Swift.Error {
     }
 }
 
-
-
 @Observable class PlayerViewModel {
 
     struct Answers: Identifiable {
@@ -85,9 +83,6 @@ enum Error: Swift.Error {
     var incorrectPair: MinimalPairs.Pair?
     var errorMessage: String?
     var wordTitle: String?
-
-
-
 
     func playMinimalPair() async {
         do {
@@ -111,7 +106,6 @@ enum Error: Swift.Error {
         }
     }
 
-
     func repeatsound() async {
         guard let currentPair = correctpair else {
             errorMessage = "No current pair to replay."
@@ -129,7 +123,6 @@ enum Error: Swift.Error {
         }
         return word
     }
-
 
      func fetchCorrectKana() -> String {
         guard let correctKana = correctpair?.entries[0].pronunciations[0].phrases[0].rawPronunciation else {
@@ -170,7 +163,6 @@ enum Error: Swift.Error {
                 index += 2
             }
         }
-
         return moras
     }
 
@@ -196,7 +188,6 @@ enum Error: Swift.Error {
         return pitchRepersentedWord
     }
 
-
     func pitchMisrepersentation(minimalPair: String) -> String {
         var moras = splitIntoMoras(text: minimalPair)
         print(" Here are the moras: \(moras)")
@@ -219,7 +210,6 @@ enum Error: Swift.Error {
         return pitchRepersentedWord
     }
 
-
     private func playSound(data: UUID) async {
             do {
                 let player = try await AVAudioPlayer(data: fetchAudioData(moraId: data))
@@ -238,7 +228,6 @@ enum Error: Swift.Error {
         print(answerHistory)
     }
 
-
     private func fetchAudioData(moraId: UUID) async throws -> Data {
         guard let url = URL(string: "https://kotu.io/api/pronunciation/audio/\(moraId)?lowPass=false&backgroundNoise=false") else {
             throw URLError(.badURL)
@@ -250,11 +239,6 @@ enum Error: Swift.Error {
         }
         return data
     }
-
-
-
-
-
 
     func getPitchType() -> PitchAccentType {
         if correctpair?.pitchAccent == 0 {

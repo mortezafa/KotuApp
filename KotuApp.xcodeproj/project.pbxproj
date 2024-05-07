@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7C4415372AE0A52E001BBA42 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7C4415362AE0A52E001BBA42 /* config.json */; };
 		7C5B9EBA2ABB2FF800874E6B /* HowtoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5B9EB92ABB2FF800874E6B /* HowtoView.swift */; };
+		7CB52F7A2BE7F29900101AD3 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB52F792BE7F29900101AD3 /* SplashScreen.swift */; };
 		7CC1BCF32AB7E10A00021745 /* KotuAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF22AB7E10A00021745 /* KotuAppApp.swift */; };
 		7CC1BCF52AB7E10A00021745 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF42AB7E10A00021745 /* ContentView.swift */; };
 		7CC1BCF72AB7E10B00021745 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF62AB7E10B00021745 /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		7C4415362AE0A52E001BBA42 /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		7C5B9EB92ABB2FF800874E6B /* HowtoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowtoView.swift; sourceTree = "<group>"; };
+		7CB52F792BE7F29900101AD3 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		7CC1BCEF2AB7E10A00021745 /* KotuApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KotuApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC1BCF22AB7E10A00021745 /* KotuAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotuAppApp.swift; sourceTree = "<group>"; };
 		7CC1BCF42AB7E10A00021745 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				7C4415352AE0A4C4001BBA42 /* Resources */,
 				7CC1BCF22AB7E10A00021745 /* KotuAppApp.swift */,
 				7CFC0D8B2ADF271A001CD660 /* MinimalPairFetcher.swift */,
+				7CB52F792BE7F29900101AD3 /* SplashScreen.swift */,
 				7CC1BCF42AB7E10A00021745 /* ContentView.swift */,
 				7C5B9EB92ABB2FF800874E6B /* HowtoView.swift */,
 				7CC7BCE32ABC81EA000E822F /* PatternView.swift */,
@@ -278,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CB52F7A2BE7F29900101AD3 /* SplashScreen.swift in Sources */,
 				7CC1BCF52AB7E10A00021745 /* ContentView.swift in Sources */,
 				7CC7BCE42ABC81EA000E822F /* PatternView.swift in Sources */,
 				7C5B9EBA2ABB2FF800874E6B /* HowtoView.swift in Sources */,

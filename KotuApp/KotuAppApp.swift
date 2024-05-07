@@ -6,7 +6,7 @@ import SwiftUI
 struct KotuAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreen()
         }
     }
 }

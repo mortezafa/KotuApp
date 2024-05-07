@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var hasSelected: Bool = false
     @State private var isLeftButtonCorrect: Bool? = nil
     @State private var isRightButtonCorrect: Bool? = nil
+    @State private var addedToHistroy: Bool = false
+
 
 
     var body: some View {
@@ -41,6 +43,9 @@ struct ContentView: View {
 
             HStack {
                 Button {
+                    guard !addedToHistroy else { return }
+                       addedToHistroy = true
+
                     let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
                     isLeftButtonCorrect = isCorrect
                     isRightButtonCorrect = !isCorrect
@@ -60,6 +65,9 @@ struct ContentView: View {
                 .tint(isLeftButtonCorrect == true ? Color("correct") : (isLeftButtonCorrect == false ? Color("inCorrect") : Color.blue))
 
                 Button {
+                    guard !addedToHistroy else { return }
+                       addedToHistroy = true
+
                     let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
                     isRightButtonCorrect = isCorrect
                     isLeftButtonCorrect = !isCorrect
@@ -92,9 +100,8 @@ struct ContentView: View {
 
                         isLeftButtonCorrect = nil
                         isRightButtonCorrect = nil
+                        addedToHistroy = false
                         hasSelected = false
-                    } else {
-
                     }
                     await viewModel.repeatsound()
 
