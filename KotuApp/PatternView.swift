@@ -3,12 +3,7 @@
 import SwiftUI
 
 struct PatternView: View {
-    @State var checkedHeibanOdaka = false
-    @State var checkedAtamadaka = false
-    @State var checkedNakaDaka1 = false
-    @State var checkedNakaDaka2 = false
-    @State var checkedNakaDaka3 = false
-
+    @State var kotuService = KotuService.shared
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -16,7 +11,7 @@ struct PatternView: View {
                 .font(.largeTitle)
                 .padding(.vertical)
             Text("Heiban / Odaka")
-            Toggle(isOn: $checkedHeibanOdaka) {
+            Toggle(isOn: $kotuService.checkedHeibanOdaka) {
                 HStack(spacing: 0) {
                     Text("◯")
                     Text("◯◯◯")
@@ -43,9 +38,15 @@ struct PatternView: View {
                 }
                     .fontWeight(.none)
             }
+            .onChange(of: kotuService.checkedHeibanOdaka) {
+                Task {
+                    try await kotuService.randomMinimalPairs()
+                }
+            }
+
 
             Text("Atamadaka")
-            Toggle(isOn: $checkedAtamadaka) {
+            Toggle(isOn: $kotuService.checkedAtamadaka) {
                 HStack (spacing: 0) {
                     Text("◯")
                         .overlay(alignment: .top) {
@@ -62,11 +63,16 @@ struct PatternView: View {
                 }
                 .fontWeight(.none)
             }
+            .onChange(of: kotuService.checkedAtamadaka) {
+                Task {
+                    try await kotuService.randomMinimalPairs()
+                }
+            }
 
             Text("Nakadaka")
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Toggle(isOn: $checkedNakaDaka1) {
+            Toggle(isOn: $kotuService.checkedNakaDaka1) {
                 HStack(spacing: 0) {
                     Text("◯")
                     Text("◯")
@@ -84,7 +90,13 @@ struct PatternView: View {
                 }
                 .fontWeight(.none)
             }
-            Toggle(isOn: $checkedNakaDaka2) {
+            .onChange(of: kotuService.checkedNakaDaka1) {
+                Task {
+                    try await kotuService.randomMinimalPairs()
+                }
+            }
+
+            Toggle(isOn: $kotuService.checkedNakaDaka2) {
                 HStack(spacing: 0) {
                     Text("◯")
                     Text("◯〜◯")
@@ -102,7 +114,13 @@ struct PatternView: View {
                 }
                 .fontWeight(.none)
             }
-            Toggle(isOn: $checkedNakaDaka3) {
+            .onChange(of: kotuService.checkedNakaDaka2) {
+                Task {
+                    try await kotuService.randomMinimalPairs()
+                }
+            }
+
+            Toggle(isOn: $kotuService.checkedNakaDaka3) {
                 HStack(spacing: 0) {
                     Text("◯")
                     Text("◯〜◯")
@@ -119,6 +137,11 @@ struct PatternView: View {
                     Text("◯")
                 }
                     .fontWeight(.none)
+            }
+            .onChange(of: kotuService.checkedNakaDaka3) {
+                Task {
+                    try await kotuService.randomMinimalPairs()
+                }
             }
         }
         .font(.title2)

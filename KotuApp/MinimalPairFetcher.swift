@@ -1,4 +1,3 @@
-// MinimalPairFetcher.swift
 
 import Foundation
 import AVFoundation
@@ -31,12 +30,25 @@ enum Error: Swift.Error {
     case invalidResponse
 }
 
+
+
 @Observable class KotuService {
+    static let shared = KotuService()
+
+
+    var checkedHeibanOdaka = true
+    var checkedAtamadaka = true
+    var checkedNakaDaka1 = true
+    var checkedNakaDaka2 = true
+    var checkedNakaDaka3 = true
+
+    private init() {}
 
     func randomMinimalPairs() async throws -> MinimalPairs {
-        guard let url = URL(string: "https://kotu.io/api/tests/pitchAccent/minimalPairs/random?heibanEnabled=true&atamadakaEnabled=true&secondMoraAccentEnabled=true&secondToLastMoraAccentEnabled=true&otherNakadakaEnabled=true&onlyDevoicedWords=false") else {
+        guard let url = URL(string: "https://kotu.io/api/tests/pitchAccent/minimalPairs/random?heibanEnabled=\(checkedHeibanOdaka)&atamadakaEnabled=\(checkedAtamadaka)&secondMoraAccentEnabled=\(checkedNakaDaka1)&secondToLastMoraAccentEnabled=true&otherNakadakaEnabled=\(checkedNakaDaka3)&onlyDevoicedWords=false") else {
             throw Error.invalidURL
         }
+        print(url)
 
         let session = URLSession.shared
         var request = URLRequest(url: url)
@@ -48,8 +60,6 @@ enum Error: Swift.Error {
                 print("Failed response or bad status code")
                 throw Error.invalidResponse
             }
-
-            print("Data received: \(data.count) bytes")  // Log the size of the data
 
             let decoder = JSONDecoder()
             do {
@@ -75,7 +85,7 @@ enum Error: Swift.Error {
         let pitchType: PitchAccentType
     }
 
-    private let service = KotuService()
+    private let service = KotuService.shared
     private var player: AVAudioPlayer?
     var answerHistory: [Answers] = []
     var minimalPairs: MinimalPairs?
@@ -83,6 +93,7 @@ enum Error: Swift.Error {
     var incorrectPair: MinimalPairs.Pair?
     var errorMessage: String?
     var wordTitle: String?
+    private var potentialAccents = [0...10]
 
     func playMinimalPair() async {
         do {
@@ -94,7 +105,6 @@ enum Error: Swift.Error {
                 errorMessage = "No pair available."
                 return
             }
-            print("THIS IS THE CORRECT PAIR \(correctPair) ")
 
             correctpair = correctPair
 
@@ -108,6 +118,16 @@ enum Error: Swift.Error {
 
     func repeatsound() async {
         guard let currentPair = correctpair else {
+            errorMessage = "No current pair to replay."
+            return
+        }
+
+        let data = currentPair.id
+        await playSound(data: data)
+    }
+
+    func playIncorrectSound() async {
+        guard let currentPair = incorrectPair else {
             errorMessage = "No current pair to replay."
             return
         }

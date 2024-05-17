@@ -43,18 +43,27 @@ struct ContentView: View {
 
             HStack {
                 Button {
-                    guard !addedToHistroy else { return }
-                       addedToHistroy = true
+                    if !hasSelected {
+                            addedToHistroy = true
+                            let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
+                            isLeftButtonCorrect = isCorrect
+                            isRightButtonCorrect = !isCorrect
+                            hasSelected = true
 
-                    let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
-                    isLeftButtonCorrect = isCorrect
-                    isRightButtonCorrect = !isCorrect
-                    hasSelected = true
-                    if isCorrect {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
-                    } else {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
-                    }
+                            if isCorrect {
+                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
+                            } else {
+                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
+                            }
+                        } else {
+                            Task{
+                                if let isCorrect = isLeftButtonCorrect, isCorrect {
+                                    await viewModel.repeatsound()
+                                } else {
+                                    await viewModel.playIncorrectSound()
+                                }
+                            }
+                        }
                 } label: {
                     Text(leftButtonText)
                         .font(.title2)
@@ -65,18 +74,28 @@ struct ContentView: View {
                 .tint(isLeftButtonCorrect == true ? Color("correct") : (isLeftButtonCorrect == false ? Color("inCorrect") : Color.blue))
 
                 Button {
-                    guard !addedToHistroy else { return }
-                       addedToHistroy = true
+                    if !hasSelected {
+                            addedToHistroy = true
+                            let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
+                            isLeftButtonCorrect = !isCorrect
+                            isRightButtonCorrect = isCorrect
+                            hasSelected = true
 
-                    let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
-                    isRightButtonCorrect = isCorrect
-                    isLeftButtonCorrect = !isCorrect
-                    hasSelected = true
-                    if isCorrect {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
-                    } else {
-                        viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
-                    }
+                            if isCorrect {
+                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
+                            } else {
+                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
+                            }
+                        } else {
+                            Task{
+                                if let isCorrect = isRightButtonCorrect, isCorrect {
+                                    await viewModel.repeatsound()
+                                } else {
+                                    await viewModel.playIncorrectSound()
+                                }
+                            }
+                        }
+
                 } label: {
                     Text(rightButtonText)
                         .font(.title2)
