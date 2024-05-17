@@ -10,6 +10,7 @@
 		7C4415372AE0A52E001BBA42 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7C4415362AE0A52E001BBA42 /* config.json */; };
 		7C5B9EBA2ABB2FF800874E6B /* HowtoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5B9EB92ABB2FF800874E6B /* HowtoView.swift */; };
 		7CB52F7A2BE7F29900101AD3 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB52F792BE7F29900101AD3 /* SplashScreen.swift */; };
+		7CBB4E972BF7EF460038B16E /* Kotu Banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CBB4E962BF7EF460038B16E /* Kotu Banner.png */; };
 		7CC1BCF32AB7E10A00021745 /* KotuAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF22AB7E10A00021745 /* KotuAppApp.swift */; };
 		7CC1BCF52AB7E10A00021745 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF42AB7E10A00021745 /* ContentView.swift */; };
 		7CC1BCF72AB7E10B00021745 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CC1BCF62AB7E10B00021745 /* Assets.xcassets */; };
@@ -42,6 +43,7 @@
 		7C4415362AE0A52E001BBA42 /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		7C5B9EB92ABB2FF800874E6B /* HowtoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowtoView.swift; sourceTree = "<group>"; };
 		7CB52F792BE7F29900101AD3 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		7CBB4E962BF7EF460038B16E /* Kotu Banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Kotu Banner.png"; sourceTree = "<group>"; };
 		7CC1BCEF2AB7E10A00021745 /* KotuApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KotuApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC1BCF22AB7E10A00021745 /* KotuAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotuAppApp.swift; sourceTree = "<group>"; };
 		7CC1BCF42AB7E10A00021745 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,9 +91,18 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		7CBB4E952BF7EEFA0038B16E /* GithubAssests */ = {
+			isa = PBXGroup;
+			children = (
+				7CBB4E962BF7EF460038B16E /* Kotu Banner.png */,
+			);
+			path = GithubAssests;
+			sourceTree = "<group>";
+		};
 		7CC1BCE62AB7E10A00021745 = {
 			isa = PBXGroup;
 			children = (
+				7CBB4E952BF7EEFA0038B16E /* GithubAssests */,
 				7CC1BCF12AB7E10A00021745 /* KotuApp */,
 				7CC1BD022AB7E10B00021745 /* KotuAppTests */,
 				7CC1BD0C2AB7E10B00021745 /* KotuAppUITests */,
@@ -257,6 +268,7 @@
 				7CC1BCFA2AB7E10B00021745 /* Preview Assets.xcassets in Resources */,
 				7CC1BCF72AB7E10B00021745 /* Assets.xcassets in Resources */,
 				7C4415372AE0A52E001BBA42 /* config.json in Resources */,
+				7CBB4E972BF7EF460038B16E /* Kotu Banner.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
