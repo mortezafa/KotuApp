@@ -17,7 +17,7 @@ This app can be found on the iOS app store
 
 
 ## Usage
-![KotuScreenShotTest](https://github.com/mortezafa/KotuApp/assets/111158753/1e27dfe9-d420-4fdd-a791-4020a63f7fb9)
+<img src="https://github.com/mortezafa/KotuApp/assets/111158753/1e27dfe9-d420-4fdd-a791-4020a63f7fb9" alt="KotuScreenShotTest" width="200"/>
 
 ## Technologies-used
 This app was Devoloped in Swift and SwiftUI and utilizes the Kotu API
