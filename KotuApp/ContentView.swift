@@ -253,45 +253,59 @@ struct PitchPatternsView: View {
             .padding(.vertical)
         HStack {
             Text("All")
+                .font(.title3)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 3)
                 .background(.gray.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
             Text("\(numOfCorrect) of \(totalAttempts) (\(percentage))")
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
 
         }
         HStack {
             Text("Heiban")
+                .font(.title3)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 3)
                 .background(.blue.opacity(0.7))
                 .clipShape(Capsule())
             Text("Odaka")
+                .font(.title3)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 3)
                 .background(.green.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
             Text("\(correctCount(pitchType:.heiban)) of \(totalCount(pitchType:.heiban)) (\(percentage(pitchType:.heiban)))")
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
         }
+        
         HStack {
             Text("Atamadaka")
+                .font(.title3)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 3)
                 .background(.red.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
             Text("\(correctCount(pitchType:.atamadaka)) of \(totalCount(pitchType:.atamadaka)) (\(percentage(pitchType:.atamadaka)))")
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
         }
         HStack {
             Text("Nakadaka")
+                .font(.title3)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 3)
                 .background(.orange.opacity(0.7))
                 .clipShape(Capsule())
             Spacer()
             Text("\(correctCount(pitchType:.nakadaka)) of \(totalCount(pitchType:.nakadaka)) (\(percentage(pitchType:.nakadaka)))")
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
         }
 
 
