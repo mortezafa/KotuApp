@@ -282,7 +282,7 @@ struct PitchPatternsView: View {
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }
-        
+
         HStack {
             Text("Atamadaka")
                 .font(.title3)
