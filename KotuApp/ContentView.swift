@@ -3,24 +3,22 @@
 import SwiftUI
 import AVFoundation
 
-
 struct ContentView: View {
-    var viewModel = PlayerViewModel()
-    @State private var titleWord: String = ""
-    @State private var leftButtonText: String = ""
-    @State private var leftId: UUID = UUID()
-    @State private var rightId: UUID = UUID()
-    @State private var rightButtonText: String = ""
-    @State private var hasSelected: Bool = false
+
+    let viewModel = PlayerViewModel()
+
+    @State private var titleWord = ""
+    @State private var leftButtonText = ""
+    @State private var leftId = UUID()
+    @State private var rightId = UUID()
+    @State private var rightButtonText = ""
+    @State private var hasSelected = false
     @State private var isLeftButtonCorrect: Bool? = nil
     @State private var isRightButtonCorrect: Bool? = nil
-    @State private var addedToHistroy: Bool = false
+    @State private var addedToHistroy = false
 
-
-
-    var body: some View {
+    var content: some View {
         VStack {
-            HistortyPatternView(viewModel: viewModel)
             Spacer()
             Text(titleWord)
                 .padding(.bottom, 30)
@@ -44,26 +42,26 @@ struct ContentView: View {
             HStack {
                 Button {
                     if !hasSelected {
-                            addedToHistroy = true
-                            let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
-                            isLeftButtonCorrect = isCorrect
-                            isRightButtonCorrect = !isCorrect
-                            hasSelected = true
+                        addedToHistroy = true
+                        let isCorrect = isCorrectWord(currentID: leftId, correctID: viewModel.getCorrectID())
+                        isLeftButtonCorrect = isCorrect
+                        isRightButtonCorrect = !isCorrect
+                        hasSelected = true
 
-                            if isCorrect {
-                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
-                            } else {
-                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
-                            }
+                        if isCorrect {
+                            viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
                         } else {
-                            Task{
-                                if let isCorrect = isLeftButtonCorrect, isCorrect {
-                                    await viewModel.repeatsound()
-                                } else {
-                                    await viewModel.playIncorrectSound()
-                                }
+                            viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
+                        }
+                    } else {
+                        Task{
+                            if let isCorrect = isLeftButtonCorrect, isCorrect {
+                                await viewModel.repeatsound()
+                            } else {
+                                await viewModel.playIncorrectSound()
                             }
                         }
+                    }
                 } label: {
                     Text(leftButtonText)
                         .font(.title2)
@@ -75,27 +73,26 @@ struct ContentView: View {
 
                 Button {
                     if !hasSelected {
-                            addedToHistroy = true
-                            let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
-                            isLeftButtonCorrect = !isCorrect
-                            isRightButtonCorrect = isCorrect
-                            hasSelected = true
+                        addedToHistroy = true
+                        let isCorrect = isCorrectWord(currentID: rightId, correctID: viewModel.getCorrectID())
+                        isLeftButtonCorrect = !isCorrect
+                        isRightButtonCorrect = isCorrect
+                        hasSelected = true
 
-                            if isCorrect {
-                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
-                            } else {
-                                viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
-                            }
+                        if isCorrect {
+                            viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: true)
                         } else {
-                            Task{
-                                if let isCorrect = isRightButtonCorrect, isCorrect {
-                                    await viewModel.repeatsound()
-                                } else {
-                                    await viewModel.playIncorrectSound()
-                                }
+                            viewModel.addToHistory(word: viewModel.pitchRepersentation(minimalPair: viewModel.fetchCorrectWord()), isCorrect: false)
+                        }
+                    } else {
+                        Task {
+                            if let isCorrect = isRightButtonCorrect, isCorrect {
+                                await viewModel.repeatsound()
+                            } else {
+                                await viewModel.playIncorrectSound()
                             }
                         }
-
+                    }
                 } label: {
                     Text(rightButtonText)
                         .font(.title2)
@@ -115,7 +112,7 @@ struct ContentView: View {
                         await viewModel.playMinimalPair()
                         titleWord = viewModel.fetchCorrectWord()
 
-                        displayCorrectKanaUI(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
+                        display(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
 
                         isLeftButtonCorrect = nil
                         isRightButtonCorrect = nil
@@ -123,7 +120,6 @@ struct ContentView: View {
                         hasSelected = false
                     }
                     await viewModel.repeatsound()
-
                 }
             } label: {
                 Text("Continue")
@@ -141,20 +137,55 @@ struct ContentView: View {
         }
         .padding(.horizontal)
         .onAppear(perform: {
-            Task{
+            Task {
                 await viewModel.playMinimalPair()
                 titleWord = viewModel.fetchCorrectWord()
                 await viewModel.repeatsound()
-                displayCorrectKanaUI(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
+                display(correctKana: viewModel.fetchCorrectKana(), incorrectKana: viewModel.fetchIncorrectKana())
             }
         })
     }
-    func displayCorrectKanaUI(correctKana: String, incorrectKana: String) {
+
+    @State private var historyPopup = false
+    @State private var howtoPopup = false
+    @State private var pattternPopup = false
+
+    var body: some View {
+        NavigationStack {
+            content
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("History") {
+                            historyPopup.toggle()
+                        }
+                    }
+
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button("Settings", systemImage: "gearshape") {
+                            pattternPopup.toggle()
+                        }
+                        Button("Info", systemImage: "info.circle") {
+                            howtoPopup.toggle()
+                        }
+                    }
+                }
+                .fullScreenCover(isPresented: $howtoPopup, content: HowtoView.init)
+                .sheet(isPresented: $historyPopup) {
+                    HistorySheet(viewModel: viewModel)
+                }
+                .sheet(isPresented: $pattternPopup) {
+                    PatternView()
+                        .presentationDetents([.height(400)])
+                }
+        }
+    }
+
+    func display(correctKana: String, incorrectKana: String) {
         let correctKana = viewModel.pitchRepersentation(minimalPair: correctKana)
         let incorrectKana = viewModel.pitchMisrepersentation(minimalPair: incorrectKana)
         let correctId = viewModel.getCorrectID()
-        let randomNumber = Int.random(in: 1...2)
-        if randomNumber == 1 {
+
+        if Bool.random() {
             leftButtonText = correctKana
             leftId = correctId
             rightId = UUID()
@@ -167,75 +198,34 @@ struct ContentView: View {
         }
     }
 
-
     func isCorrectWord(currentID: UUID, correctID: UUID) -> Bool {
         return currentID == correctID
     }
 }
 
-
-struct HistortyPatternView: View {
-    @State var viewModel: PlayerViewModel
-    @State private var historyPopup = false
-    @State private var howtoPopup = false
-    @State private var pattternPopup = false
+struct HistorySheet: View {
+    let viewModel: PlayerViewModel
     var body: some View {
-        Button {
-            howtoPopup.toggle()
-        } label: {
-            Image(systemName: "questionmark.circle.fill")
-        }
-        .font(.largeTitle)
-        .fullScreenCover(isPresented: $howtoPopup, content: HowtoView.init)
-        .frame(maxWidth: .infinity, alignment: .trailing)
-        .padding(.bottom)
-        HStack {
-            Button {
-                historyPopup.toggle()
-            } label: {
-                Text("History")
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-
-            }
-            .buttonStyle(.borderedProminent)
-            .sheet(isPresented: $historyPopup) {
-                VStack {
-                    List {
-                        ForEach(viewModel.answerHistory.reversed()) { historyEntry in
-                            HStack {
-                                Text(historyEntry.word)
-                                    .foregroundStyle(historyEntry.isCorrect ? Color("correct") : Color("inCorrect"))
-                            }
-                            .listRowBackground(historyEntry.isCorrect ? Color("correctHis") : Color("inCorrectHis"))
-                        }
+        VStack {
+            List {
+                ForEach(viewModel.answerHistory.reversed()) { historyEntry in
+                    HStack {
+                        Text(historyEntry.word)
+                            .foregroundStyle(historyEntry.isCorrect ? Color("correct") : Color("inCorrect"))
                     }
-                    .frame(width: .infinity)
+                    .listRowBackground(historyEntry.isCorrect ? Color("correctHis") : Color("inCorrectHis"))
                 }
-                .presentationDetents([.medium, .large])
             }
-            Button {
-                pattternPopup.toggle()
-            } label: {
-                Text("Patterns")
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .sheet(isPresented: $pattternPopup) {
-                PatternView()
-                    .presentationDetents([.height(400)])
-            }
+            .frame(width: .infinity)
         }
-
+        .presentationDetents([.medium, .large])
     }
 }
 
 struct PitchPatternsView: View {
-    @State var viewModel: PlayerViewModel
-    private var numOfCorrect: Int { viewModel.answerHistory.filter { $0.isCorrect }.count
+    let viewModel: PlayerViewModel
+    private var numOfCorrect: Int {
+        viewModel.answerHistory.filter { $0.isCorrect }.count
     }
     private var totalAttempts: Int { viewModel.answerHistory.count }
 
@@ -246,7 +236,6 @@ struct PitchPatternsView: View {
         let calculatedPercentage = (numOfCorrect * 100) / totalAttempts
         return "\(calculatedPercentage)%"
     }
-
 
     var body: some View {
         Divider()
@@ -307,9 +296,8 @@ struct PitchPatternsView: View {
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }
-
-
     }
+
     func correctCount(pitchType: PitchAccentType) -> Int {
         viewModel.answerHistory.filter { $0.isCorrect && $0.pitchType == pitchType }.count
     }

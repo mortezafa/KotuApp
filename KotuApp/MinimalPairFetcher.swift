@@ -164,7 +164,7 @@ enum Error: Swift.Error {
     }
 
     private func splitIntoMoras(text: String) -> [String] {
-        let smallKana: Set<Character> = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ", "ッ"]
+        let smallKana: Set<Character> = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ"]
         var moras: [String] = []
         let characters = Array(text)
 
@@ -172,12 +172,12 @@ enum Error: Swift.Error {
         while index < characters.count {
             let char = characters[index]
 
-            //if its the last character or the next character is not a small kana, its a single mora.
+            // If its the last character or the next character is not a small kana, its a single mora.
             if index == characters.count - 1 || !smallKana.contains(characters[index + 1]) {
                 moras.append(String(char))
                 index += 1
             } else {
-                //the next character is a small kana so we can jusy combine them into a single mora.
+                // The next character is a small kana so we can just combine them into a single mora.
                 let nextChar = characters[index + 1]
                 moras.append(String(char) + String(nextChar))
                 index += 2
@@ -187,24 +187,16 @@ enum Error: Swift.Error {
     }
 
     func pitchRepersentation(minimalPair: String) -> String {
-        var moras = splitIntoMoras(text: minimalPair)
-        print(" Here are the moras: \(moras)")
-        var pitchRepersentedWord = ""
-
         guard let pitchAccent = correctpair?.pitchAccent else {
             return "No pair"
         }
-
-        if pitchAccent == 0 {
-            pitchRepersentedWord = moras.joined()
-        } else if pitchAccent == 1 {
-            moras.insert("＼", at: 1)
-            pitchRepersentedWord = moras.joined()
-        } else if pitchAccent > 1 {
+        var moras = splitIntoMoras(text: minimalPair)
+        print(" Here are the moras: \(moras)")
+        
+        if pitchAccent >= 1 {
             moras.insert("＼", at: pitchAccent)
-            pitchRepersentedWord = moras.joined()
         }
-
+        let pitchRepersentedWord = moras.joined()
         return pitchRepersentedWord
     }
 
