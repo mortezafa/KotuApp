@@ -11,7 +11,6 @@ struct MinimalPairs: Decodable {
                     let rawPronunciation: String
                 }
 
-                let soundFile: String
                 let phrases: [Phrase]
             }
             let pronunciations: [Pronunciation]
